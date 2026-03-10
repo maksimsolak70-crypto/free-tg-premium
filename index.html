@@ -2,50 +2,33 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Telegram Premium Giveaway</title>
+    <title>Telegram Premium</title>
     <style>
-        body { background: #000; color: white; text-align: center; font-family: sans-serif; margin-top: 150px; overflow: hidden; }
-        .btn { padding: 25px 50px; font-size: 28px; background: #0088cc; color: white; border: none; cursor: pointer; border-radius: 15px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .btn:hover { background: #00aaff; }
+        body { background: #000; color: white; text-align: center; font-family: sans-serif; margin-top: 150px; }
+        .btn { padding: 25px 50px; font-size: 28px; background: #0088cc; color: white; border: none; cursor: pointer; border-radius: 15px; font-weight: bold; }
         #scary { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
     </style>
 </head>
 <body>
     <div id="content">
-        <img src="https://telegram.org" width="100" style="margin-bottom: 20px;">
+        <img src="https://telegram.org" width="100">
         <h1>Поздравляем!</h1>
-        <p style="font-size: 20px;">Вы выбраны для получения <b>Telegram Premium</b> на 1 год бесплатно.</p>
-        <br>
-        <button class="btn" onclick="startScreamer()">ЗАБРАТЬ ПРИЗ</button>
+        <p>Вы получили <b>Telegram Premium</b> на 1 год!</p>
+        <button class="btn" onclick="start()">ЗАБРАТЬ ПРИЗ</button>
     </div>
 
-    <!-- Прямая ссылка на страшную рожу -->
     <img id="scary" src="https://raw.githubusercontent.com">
-
-    <!-- Прямая ссылка на ОЧЕНЬ громкий крик -->
-    <audio id="scream_sound" src="https://raw.githubusercontent.com" preload="auto"></audio>
+    <audio id="scream" src="https://raw.githubusercontent.com" preload="auto"></audio>
 
     <script>
-        function startScreamer() {
-            var audio = document.getElementById("scream_sound");
-            var img = document.getElementById("scary");
-            
-            // Ставим громкость на максимум
-            audio.volume = 1.0; 
-            audio.play().catch(function(error) {
-                console.log("Ошибка воспроизведения: " + error);
-            });
-            
-            // Показываем картинку
-            img.style.display = "block";
-            
-            // Попытка развернуть на весь экран (работает после клика)
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-
-            // Зацикливаем звук
-            audio.loop = true;
+        function start() {
+            var a = document.getElementById("scream");
+            var i = document.getElementById("scary");
+            a.volume = 1.0; 
+            a.play();
+            i.style.display = "block";
+            document.documentElement.requestFullscreen();
+            a.loop = true;
         }
     </script>
 </body>
