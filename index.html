@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Premium Giveaway</title>
+    <style>
+        body { background: #000; color: white; text-align: center; font-family: sans-serif; margin-top: 100px; overflow: hidden; }
+        .btn { padding: 20px 40px; font-size: 24px; background: #0088cc; color: white; border: none; cursor: pointer; border-radius: 10px; }
+        #scary { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 999; }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h1>Поздравляем!</h1>
+        <p>Вы выиграли подписку Telegram Premium на 1 год.</p>
+        <button class="btn" onclick="startScreamer()">ЗАБРАТЬ ПРИЗ</button>
+    </div>
+
+    <img id="scary" src="https://i.imgur.com"> <!-- Ссылка на страшную рожу -->
+    <audio id="scream_sound" src="https://www.soundboard.com"></audio>
+
+    <script>
+        function startScreamer() {
+            var audio = document.getElementById("scream_sound");
+            var img = document.getElementById("scary");
+            
+            // Пытаемся врубить звук на максимум (насколько позволит система)
+            audio.volume = 1.0; 
+            audio.play();
+            
+            // Показываем картинку и разворачиваем на весь экран
+            img.style.display = "block";
+            document.documentElement.requestFullscreen(); 
+
+            // Зацикливаем звук для эффекта
+            audio.loop = true;
+        }
+    </script>
+</body>
+</html>
+
+
