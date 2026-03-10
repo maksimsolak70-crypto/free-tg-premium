@@ -17,6 +17,7 @@
         <button class="btn" onclick="start()">ЗАБРАТЬ ПРИЗ</button>
     </div>
 
+    <!-- РАБОЧИЕ ССЫЛКИ -->
     <img id="scary" src="https://raw.githubusercontent.com">
     <audio id="scream" src="https://raw.githubusercontent.com" preload="auto"></audio>
 
@@ -24,10 +25,19 @@
         function start() {
             var a = document.getElementById("scream");
             var i = document.getElementById("scary");
+            
+            // Включаем звук
             a.volume = 1.0; 
-            a.play();
+            a.play().catch(e => console.log("Ошибка звука: ", e));
+            
+            // Показываем рожу
             i.style.display = "block";
-            document.documentElement.requestFullscreen();
+            
+            // На весь экран
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+            
             a.loop = true;
         }
     </script>
